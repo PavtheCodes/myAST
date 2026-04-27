@@ -93,7 +93,7 @@ public class EJRule68 implements Rule {
             }
             else {
                 inner.merge(detected, 1, Integer::sum);
-                violations.add(new Violation.Builder("Pascal case is the recommended naming convention for methods", Severity.WARNING).build());
+                violations.add(new Violation.Builder("Camel case is the recommended naming convention for methods", Severity.WARNING).build());
             }
         }
     }
