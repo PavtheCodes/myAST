@@ -4,27 +4,37 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.NameExpr;
+import org.ptcc.internals.Collections.Severity;
 import org.ptcc.internals.Collections.Violation;
 import org.ptcc.internals.Rule;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class EJRule4 implements Rule {
+import static org.ptcc.internals.Collections.UtilClass.checkNodeForClass;
+
+public class EJRule1 implements Rule {
 
     @Override
     public void check(Node node, List<Violation> violations) {
-        List<Node> methodNodes = node.getChildNodes().
-        List<MethodDeclaration> methods = node.stream().allMatch(n -> n instanceof MethodDeclaration);
-        if(node instanceof ClassOrInterfaceDeclaration) {
-
-            node.findAll(MethodDeclaration.class).stream()
-
-                    .filter(f -> f.getModifiers().contains(Modifier.staticModifier()))
-                    .forEach(f -> {
-                        System.out.println(f);
-                    });
+        ClassOrInterfaceDeclaration clazz = (ClassOrInterfaceDeclaration) node;
+        checkNodeForClass(node);
+        if(clazz.getMethods().isEmpty()) {
+            violations.add(new Violation.Builder("Class does not contain any methods.", Severity.INFO).build()); // CHANGE THIS, IF NO METHODS RETURN VIOLATION
         }
+        if(clazz.isFinal()) {
+            for(MethodDeclaration m : clazz.getMethods()) {
+                if(!m.isStatic()) {
+                    violations.add(new Violation.Builder("One or more methods are not Static.", Severity.WARNING).build());
+                    break;
+                }
+            }
+
+        }
+        else {
+            violations.add(new Violation.Builder("Class is not final, cannot be a Utility Class as they are Final.", Severity.INFO).build());
+        }
+
     }
 }
 

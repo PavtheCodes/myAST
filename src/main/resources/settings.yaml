@@ -1,0 +1,4 @@
+---
+  Rules:
+    EJRule2:
+      Threshold: 5
