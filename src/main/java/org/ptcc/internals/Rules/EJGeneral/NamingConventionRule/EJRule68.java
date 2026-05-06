@@ -22,11 +22,9 @@ public class EJRule68 implements Rule {
         UPPER_SNAKE("^[A-Z][A-Z0-9_]*$"),
         SNAKE_CASE("^[a-z][a-z0-9_]*$");
         private final Pattern pattern;
-        public final int counter;
 
         CaseConvention(String regex) {
             this.pattern = Pattern.compile(regex);
-            this.counter = 0;
         }
 
         public boolean matches(String name) {
@@ -170,8 +168,6 @@ public class EJRule68 implements Rule {
      */
     private void incrementDetectedConvention(Class<? extends Node> type, String name) {
         CaseConvention detected = CaseConvention.detectConvention(name);
-
-
         if (detected == null) return;
 
         Map<CaseConvention, Integer> innerMap =
