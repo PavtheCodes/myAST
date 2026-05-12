@@ -68,6 +68,7 @@ public class EJRule68 implements Rule {
      */
     @Override
     public void check(Node node, List<Violation> violations) {
+        counters.clear();
         if (!(node instanceof CompilationUnit cu)) return;
 
         // PASS 1
@@ -77,6 +78,7 @@ public class EJRule68 implements Rule {
         // PASS 2
         cu.findAll(SimpleName.class)
                 .forEach(n -> secondPass(n, violations));
+        counters.clear();
     }
     /**
      * Evaluates a single name node against the dominant naming convention
