@@ -20,7 +20,7 @@ import java.util.List;
  *
  * @see <a href="https://www.oreilly.com/library/view/effective-java-3rd/9780134686097/">Effective Java by Joshua Bloch</a>
  */
-public class EJRule2 implements Rule {
+class EJRule2 implements Rule {
 
     // int threshold = 4;
     /**

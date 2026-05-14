@@ -19,7 +19,7 @@ import java.util.function.Consumer;
  * Rule cannot be created with pure AST searching, check Checker Framework for more information
  * @see <a href="https://checkerframework.org/api/org/checkerframework/framework/type/TypeHierarchy.html">
  */
-public class EJRule6 implements Rule {
+class EJRule6 implements Rule {
     private AnnotatedTypeMirror mirror;
 
     public EJRule6 (AnnotatedTypeMirror mirror) {

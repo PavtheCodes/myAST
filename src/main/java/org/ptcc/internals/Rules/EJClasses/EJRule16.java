@@ -17,7 +17,7 @@ import java.lang.annotation.Retention;
 import java.util.*;
 import java.util.stream.IntStream;
 
-public class EJRule16 extends AbstractClassRule {
+class EJRule16 extends AbstractClassRule {
 
     @Override
     public void analyze(Node node, List<Violation> violations) {

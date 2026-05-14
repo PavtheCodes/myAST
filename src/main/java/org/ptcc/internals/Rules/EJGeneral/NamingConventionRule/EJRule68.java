@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 
 // Adhere to naming conventions
-public class EJRule68 implements Rule {
+class EJRule68 implements Rule {
     private enum CaseConvention {
         CAMEL_CASE("^[a-z][a-zA-Z0-9]*$"),
         PASCAL_CASE("^[A-Z][a-zA-Z0-9]*$"),

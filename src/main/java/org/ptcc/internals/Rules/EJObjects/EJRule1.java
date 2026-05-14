@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.ptcc.internals.Collections.UtilClass.checkNodeForClass;
 
-public class EJRule1 implements Rule {
+class EJRule1 implements Rule {
 
     @Override
     public void check(Node node, List<Violation> violations) {

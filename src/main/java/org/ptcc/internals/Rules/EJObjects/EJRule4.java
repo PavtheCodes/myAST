@@ -12,7 +12,7 @@ import org.ptcc.internals.Rule;
 import java.io.IOException;
 import java.util.List;
 
-public class EJRule4 implements Rule {
+class EJRule4 implements Rule {
     @Override
     public void check(Node node, List<Violation> violations) throws IOException {
         if (!(node instanceof ClassOrInterfaceDeclaration clazz)) {
