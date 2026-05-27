@@ -4,6 +4,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.SimpleName;
+import org.ptcc.internals.Config.AnalyzerConfig;
 import org.ptcc.internals.Collections.NodeTypes;
 import org.ptcc.internals.Collections.Severity;
 import org.ptcc.internals.Collections.Violation;
@@ -68,17 +69,58 @@ class EJRule68 implements Rule {
      */
     @Override
     public void check(Node node, List<Violation> violations) {
+        if (!AnalyzerConfig.getInstance().isNamingConventionDetectionEnabled()) {
+            return;
+        }
+
         counters.clear();
         if (!(node instanceof CompilationUnit cu)) return;
 
-        // PASS 1
-        cu.findAll(SimpleName.class)
-                .forEach(this::incrementConvention);
+        if (AnalyzerConfig.getInstance().isAutomaticMode()) {
+            cu.findAll(SimpleName.class)
+                    .forEach(n -> automaticPass(n, violations));
+        } else {
+            // PASS 1
+            cu.findAll(SimpleName.class)
+                    .forEach(this::incrementConvention);
 
-        // PASS 2
-        cu.findAll(SimpleName.class)
-                .forEach(n -> secondPass(n, violations));
+            // PASS 2
+            cu.findAll(SimpleName.class)
+                    .forEach(n -> secondPass(n, violations));
+        }
         counters.clear();
+    }
+
+    private void automaticPass(SimpleName nameNode, List<Violation> violations) {
+        Node parent = nameNode.getParentNode().orElse(null);
+        if (parent == null) return;
+
+        String name = nameNode.asString();
+        CaseConvention detected = CaseConvention.detectConvention(name);
+        if (detected == null) return;
+
+        if (parent instanceof ClassOrInterfaceDeclaration) {
+            checkAgainstStandard(nameNode, detected, CaseConvention.PASCAL_CASE, violations, "Classes");
+        }
+        else if (parent instanceof MethodDeclaration) {
+            checkAgainstStandard(nameNode, detected, CaseConvention.CAMEL_CASE, violations, "Methods");
+        }
+        else if (parent instanceof FieldDeclaration field) {
+            if (field.isStatic() && field.isFinal()) {
+                checkAgainstStandard(nameNode, detected, CaseConvention.UPPER_SNAKE, violations, "Constants");
+            } else {
+                checkAgainstStandard(nameNode, detected, CaseConvention.CAMEL_CASE, violations, "Fields");
+            }
+        }
+        else if (parent instanceof EnumConstantDeclaration) {
+            checkAgainstStandard(nameNode, detected, CaseConvention.UPPER_SNAKE, violations, "Enums");
+        }
+        else if (parent instanceof Parameter) {
+            checkAgainstStandard(nameNode, detected, CaseConvention.CAMEL_CASE, violations, "Parameters");
+        }
+        else if (parent instanceof VariableDeclarator) {
+            checkAgainstStandard(nameNode, detected, CaseConvention.CAMEL_CASE, violations, "Variables");
+        }
     }
     /**
      * Evaluates a single name node against the dominant naming convention
@@ -102,22 +144,22 @@ class EJRule68 implements Rule {
         if (detected == null) return;
 
         if (parent instanceof ClassOrInterfaceDeclaration) {
-            checkAgainstMajority(ClassOrInterfaceDeclaration.class, detected, violations, "Classes");
+            checkAgainstMajority(nameNode, ClassOrInterfaceDeclaration.class, detected, violations, "Classes");
         }
         else if (parent instanceof MethodDeclaration) {
-            checkAgainstMajority(MethodDeclaration.class, detected, violations, "Methods");
+            checkAgainstMajority(nameNode, MethodDeclaration.class, detected, violations, "Methods");
         }
         else if (parent instanceof FieldDeclaration) {
-            checkAgainstMajority(FieldDeclaration.class, detected, violations, "Fields");
+            checkAgainstMajority(nameNode, FieldDeclaration.class, detected, violations, "Fields");
         }
         else if (parent instanceof EnumConstantDeclaration) {
-            checkAgainstMajority(EnumConstantDeclaration.class, detected, violations, "Enums");
+            checkAgainstMajority(nameNode, EnumConstantDeclaration.class, detected, violations, "Enums");
         }
         else if (parent instanceof Parameter) {
-            checkAgainstMajority(Parameter.class, detected, violations, "Parameters");
+            checkAgainstMajority(nameNode, Parameter.class, detected, violations, "Parameters");
         }
         else if (parent instanceof VariableDeclarator) {
-            checkAgainstMajority(VariableDeclarator.class, detected, violations, "Variables");
+            checkAgainstMajority(nameNode, VariableDeclarator.class, detected, violations, "Variables");
         }
     }
     /**
@@ -223,6 +265,7 @@ class EJRule68 implements Rule {
      * @param label human-readable category name used in violation messages
      */
     private void checkAgainstMajority(
+            SimpleName nameNode,
             Class<? extends Node> type,
             CaseConvention detected,
             List<Violation> violations,
@@ -236,7 +279,22 @@ class EJRule68 implements Rule {
             violations.add(new Violation.Builder(
                     label + " should follow " + mostUsed.getKey(),
                     Severity.WARNING
-            ).build());
+            ).at(nameNode).build());
+        }
+    }
+
+    private void checkAgainstStandard(
+            SimpleName nameNode,
+            CaseConvention detected,
+            CaseConvention expected,
+            List<Violation> violations,
+            String label
+    ) {
+        if (!detected.equals(expected)) {
+            violations.add(new Violation.Builder(
+                    label + " should follow " + expected,
+                    Severity.WARNING
+            ).at(nameNode).build());
         }
     }
 }
