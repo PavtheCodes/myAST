@@ -17,6 +17,13 @@ import java.lang.annotation.Retention;
 import java.util.*;
 import java.util.stream.IntStream;
 
+/**
+ * Effective Java rule focused on encapsulation and field exposure.
+ *
+ * This rule flags classes that expose public fields, with lower severity for
+ * public final fields and higher severity for mutable public fields. It also
+ * records empty classes and nested class context for those edge cases.
+ */
 class EJRule16 extends AbstractClassRule {
 
     @Override
@@ -24,11 +31,11 @@ class EJRule16 extends AbstractClassRule {
         ClassOrInterfaceDeclaration clazz = (ClassOrInterfaceDeclaration) node;
         reflectionAnnotation(clazz);
         if (!clazz.isPublic()) {
-            violations.add(new Violation.Builder("Class is a nested class", Severity.INFO).build());
+            violations.add(new Violation.Builder("Class is a nested class", Severity.INFO).at(clazz).build());
         }
 
         List<FieldDeclaration> fields = clazz.findAll(FieldDeclaration.class);
-        if(fields.isEmpty()) { violations.add(new Violation.Builder("No fields found.", Severity.INFO).build()); }
+        if(fields.isEmpty()) { violations.add(new Violation.Builder("No fields found.", Severity.INFO).at(clazz).build()); }
         fields.stream()
                 .filter(field -> !isFieldInNestedClass(field, clazz))
                 .forEach(f -> {
@@ -40,7 +47,7 @@ class EJRule16 extends AbstractClassRule {
                         violations.add(new Violation.Builder(
                                 "Public final field '" + fieldName + "' - consider accessor methods. Line: " + line + ", Column: " + column,
                                 Severity.LOW
-                        ).lineNum(line).build());
+                        ).at(f).build());
 
                     }
                     else if (f.isPublic()) {
@@ -51,7 +58,7 @@ class EJRule16 extends AbstractClassRule {
                         violations.add(new Violation.Builder(
                                 "Public field '" + fieldName + "' should use accessor methods. Line: " + line + ", Column: " + column,
                                 Severity.HIGH
-                        ).lineNum(line).build());
+                        ).at(f).build());
                     }
 
                 });
@@ -72,22 +79,9 @@ class EJRule16 extends AbstractClassRule {
         return false;
     }
 
-    // This one was really hard to figure out. Parsing annotations within annotations is harder than expected lol.
     public void reflectionAnnotation(Node node) {
         if (node instanceof ClassOrInterfaceDeclaration) {
             List<AnnotationExpr> stmt = node.findAll(AnnotationExpr.class);
         }
     }
 }
-// Process to parse java annotations idea: Parse the whole import declaration and check for java.lang.annotation.*;
-
-/**
- * Lessons learned with this Rule:
- *      - findAll() is recursive and ignores early return statements.
- *          Even if I wanted to ignore fields from an inner class, returning the inner class empty means nothing
- *
- *
- * Todo List:
- *  - Parsing Reflection. In Lombok, fields are required to be Public, therefore should be avoided.
- *  - Accounting for fields that have several declarations, for example: "String test, test2, test3".
- **/
