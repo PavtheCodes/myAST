@@ -12,7 +12,13 @@ import org.ptcc.internals.Rule;
 import java.io.IOException;
 import java.util.List;
 
-class EJRule4 implements Rule {
+/**
+ * Effective Java rule for identifying utility-style classes that are still instantiable.
+ *
+ * The rule checks whether all methods and fields are static and then reports a
+ * violation when the class still exposes a non-private constructor.
+ */
+class   EJRule4 implements Rule {
     @Override
     public void check(Node node, List<Violation> violations) throws IOException {
         if (!(node instanceof ClassOrInterfaceDeclaration clazz)) {
@@ -27,6 +33,7 @@ class EJRule4 implements Rule {
             violations.add(new Violation.Builder(
                     "Potential utility class detected, constructor must be private to ensure non-instantiability",
                     Severity.WARNING)
+                    .at(clazz)
                     .build());
         }
     }
