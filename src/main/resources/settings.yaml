@@ -1,4 +1,8 @@
----
-  Rules:
-    EJRule2:
-      Threshold: 5
+mode: automatic
+
+namingConventionDetection:
+  enabled: true
+
+rules:
+  EJRule2:
+    parameterThreshold: 4
