@@ -1,8 +1,8 @@
 package org.ptcc.internals.Collections;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Node;
 import lombok.Getter;
-
-import java.lang.annotation.*;
 
 public final class Violation {
     private final String filePath;
@@ -45,6 +45,23 @@ public final class Violation {
             this.message = message;
             this.severity = severity;
         }
+
+        public Builder at(Node node) {
+            if (node == null) {
+                return this;
+            }
+
+            lineNum = node.getBegin().map(position -> position.line).orElse(lineNum);
+            filePath = node.findCompilationUnit()
+                    .flatMap(CompilationUnit::getStorage)
+                    .map(storage -> storage.getPath().toAbsolutePath().normalize().toString())
+                    .orElseGet(() -> {
+                        String currentFilePath = ViolationContext.getCurrentFilePath();
+                        return currentFilePath == null ? filePath : currentFilePath;
+                    });
+            return this;
+        }
+
         public Builder filePath(String val)
             { filePath = val; return this; }
 
@@ -63,11 +80,10 @@ public final class Violation {
 
     @Override
     public String toString() {
-        return "Violation{" +
-                "filePath='" + filePath + '\'' +
-                ", lineNum=" + lineNum +
-                ", message='" + message + '\'' +
-                ", severity=" + severity +
-                '}';
+        String location = filePath == null || filePath.isBlank()
+                ? "unknown"
+                : filePath + (lineNum > 0 ? ":" + lineNum : "");
+
+        return "[" + severity + "] " + location + " - " + message;
     }
 }
