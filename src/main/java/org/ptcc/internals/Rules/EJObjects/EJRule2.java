@@ -6,6 +6,7 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 
 import javassist.NotFoundException;
+import org.ptcc.internals.Config.AnalyzerConfig;
 import org.ptcc.internals.Collections.Severity;
 import org.ptcc.internals.Collections.Violation;
 import org.ptcc.internals.Rule;
@@ -22,7 +23,6 @@ import java.util.List;
  */
 class EJRule2 implements Rule {
 
-    // int threshold = 4;
     /**
      * Checks a parsed Java file for violations
      *
@@ -44,12 +44,13 @@ class EJRule2 implements Rule {
                 }
             }
             int max = parameterCount(classConstructors);
-            if(max > 10) {
-                violations.add(new Violation.Builder("Far too many parameters.", Severity.HIGH).build());
-            } else if(max > 5) {
-                violations.add(new Violation.Builder("Strongly advised to use Builder Pattern", Severity.LOW).build());
-            } else if(max >= 4) {
-                violations.add(new Violation.Builder("Constructor has \" + maxParams + \" parameters. Consider Builder pattern as parameters increase", Severity.SUGGESTION).build());
+            int threshold = AnalyzerConfig.getInstance().getEjRule2ParameterThreshold();
+            if(max > threshold + 6) {
+                violations.add(new Violation.Builder("Far too many parameters.", Severity.HIGH).at(node).build());
+            } else if(max > threshold + 1) {
+                violations.add(new Violation.Builder("Strongly advised to use Builder Pattern", Severity.LOW).at(node).build());
+            } else if(max >= threshold) {
+                violations.add(new Violation.Builder("Constructor has \" + maxParams + \" parameters. Consider Builder pattern as parameters increase", Severity.SUGGESTION).at(node).build());
             }
             System.out.println(max);
         }
