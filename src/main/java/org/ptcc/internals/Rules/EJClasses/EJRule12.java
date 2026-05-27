@@ -36,7 +36,7 @@ class EJRule12 implements Rule {
                 }
             }
             if (!hasToString) {
-                violations.add(new Violation.Builder("Always override toString!", Severity.WARNING).build());
+                violations.add(new Violation.Builder("Always override toString!", Severity.WARNING).at(clazz).build());
             }
         }
     }
