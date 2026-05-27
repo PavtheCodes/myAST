@@ -11,18 +11,20 @@ import java.util.List;
 
 public abstract class AbstractClassRule implements Rule {
     public abstract void analyze(Node node, List<Violation> violations);
-    @Override // This override on check ensures that no matter what the user overrides the check method with, that this one runs first.
+
+    @Override
     public final void check(Node node, List<Violation> violations) {
-        if(!(node instanceof ClassOrInterfaceDeclaration) || ((ClassOrInterfaceDeclaration) node).isInterface()) {
-            violations.add(new Violation.Builder("Node is not a class.", Severity.INFO).build());
+        if (!(node instanceof ClassOrInterfaceDeclaration clazz)) {
+            return;
         }
-        ClassOrInterfaceDeclaration clazz = (ClassOrInterfaceDeclaration) node;
-        if(clazz.isEmpty()) {
-            violations.add(new Violation.Builder("Node is empty", Severity.INFO).build());
+        if (clazz.isInterface()) {
+            return;
         }
-        /*if(clazz.isNestedType()) {
-            violations.add(new Violation.Builder("Node is nested, top level class required.", Severity.INFO).build());
-        }*/
+
+        if (clazz.isEmpty()) {
+            violations.add(new Violation.Builder("Class is empty", Severity.INFO).at(clazz).build());
+        }
+
         analyze(node, violations);
     }
 }
