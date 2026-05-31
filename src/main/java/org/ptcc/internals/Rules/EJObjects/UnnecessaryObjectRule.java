@@ -1,28 +1,22 @@
 package org.ptcc.internals.Rules.EJObjects;
 
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
-import org.checkerframework.framework.type.AnnotatedTypeFactory;
 import org.checkerframework.framework.type.AnnotatedTypeMirror;
 import org.ptcc.internals.Collections.Violation;
 import org.ptcc.internals.Rule;
 
-import javax.lang.model.type.TypeMirror;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * Work In Progress,
  * Rule cannot be created with pure AST searching, check Checker Framework for more information
  * @see <a href="https://checkerframework.org/api/org/checkerframework/framework/type/TypeHierarchy.html">
  */
-class EJRule6 implements Rule {
+class UnnecessaryObjectRule implements Rule {
     private AnnotatedTypeMirror mirror;
 
-    public EJRule6 (AnnotatedTypeMirror mirror) {
+    public UnnecessaryObjectRule(AnnotatedTypeMirror mirror) {
         this.mirror = mirror;
     }
 
