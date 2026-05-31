@@ -18,7 +18,7 @@ import java.util.List;
  * The rule checks whether all methods and fields are static and then reports a
  * violation when the class still exposes a non-private constructor.
  */
-class   EJRule4 implements Rule {
+class PrivateConstructorForUtilityRule implements Rule {
     @Override
     public void check(Node node, List<Violation> violations) throws IOException {
         if (!(node instanceof ClassOrInterfaceDeclaration clazz)) {

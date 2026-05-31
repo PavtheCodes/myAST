@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-class EJRule12 implements Rule {
+class OverrideToStringRule implements Rule {
     /**
      * Analyzes a {@link CompilationUnit} to scan for toString violations, where if it's present then
      * it's completely ignored. If passed node is a class and does not have a toString

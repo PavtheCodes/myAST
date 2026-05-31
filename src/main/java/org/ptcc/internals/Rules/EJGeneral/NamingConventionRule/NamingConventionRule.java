@@ -9,18 +9,20 @@ import org.ptcc.internals.Collections.NodeTypes;
 import org.ptcc.internals.Collections.Severity;
 import org.ptcc.internals.Collections.Violation;
 import org.ptcc.internals.Rule;
+import org.ptcc.internals.Rules.TwoPassRule;
 
+import java.sql.SQLOutput;
 import java.util.*;
 import java.util.regex.Pattern;
 
 
 
 // Adhere to naming conventions
-class EJRule68 implements Rule {
+class NamingConventionRule implements TwoPassRule {
     private enum CaseConvention {
+        UPPER_SNAKE("^[A-Z][A-Z0-9_]*$"),
         CAMEL_CASE("^[a-z][a-zA-Z0-9]*$"),
         PASCAL_CASE("^[A-Z][a-zA-Z0-9]*$"),
-        UPPER_SNAKE("^[A-Z][A-Z0-9_]*$"),
         SNAKE_CASE("^[a-z][a-z0-9_]*$");
         private final Pattern pattern;
 
@@ -42,7 +44,7 @@ class EJRule68 implements Rule {
 
     Map<Class<? extends Node>, Map<CaseConvention, Integer>> counters = new HashMap<>();
 
-    public EJRule68() {
+    public NamingConventionRule() {
         for(NodeTypes n : NodeTypes.values()) {
             counters.put(n.getNodeClass(), new HashMap<>());
         }
@@ -65,30 +67,23 @@ class EJRule68 implements Rule {
      * the dominant naming convention within the analyzed CompilationUnit.
      *
      * @param node the root {@link CompilationUnit} representing a Java source file
-     * @param violations a mutable list where detected naming violations will be added
      */
     @Override
-    public void check(Node node, List<Violation> violations) {
-        if (!AnalyzerConfig.getInstance().isNamingConventionDetectionEnabled()) {
-            return;
-        }
+    public void firstPass(Node node) {
+        if (!(node instanceof CompilationUnit cu)) return;
+        cu.findAll(SimpleName.class).forEach(this::incrementConvention);
+    }
 
-        counters.clear();
+    @Override
+    public void check(Node node, List<Violation> violations) {
+        if (!AnalyzerConfig.getInstance().isNamingConventionDetectionEnabled()) return;
         if (!(node instanceof CompilationUnit cu)) return;
 
         if (AnalyzerConfig.getInstance().isAutomaticMode()) {
-            cu.findAll(SimpleName.class)
-                    .forEach(n -> automaticPass(n, violations));
+            cu.findAll(SimpleName.class).forEach(n -> automaticPass(n, violations));
         } else {
-            // PASS 1
-            cu.findAll(SimpleName.class)
-                    .forEach(this::incrementConvention);
-
-            // PASS 2
-            cu.findAll(SimpleName.class)
-                    .forEach(n -> secondPass(n, violations));
+            cu.findAll(SimpleName.class).forEach(n -> secondPass(n, violations));
         }
-        counters.clear();
     }
 
     private void automaticPass(SimpleName nameNode, List<Violation> violations) {
@@ -295,6 +290,20 @@ class EJRule68 implements Rule {
                     label + " should follow " + expected,
                     Severity.WARNING
             ).at(nameNode).build());
+        }
+    }
+    public void printReport() {
+        for (Map.Entry<Class<? extends Node>, Map<CaseConvention, Integer>> entry : counters.entrySet()) {
+            Class<?> type = entry.getKey();
+            Map<CaseConvention, Integer> stats = entry.getValue();
+
+            System.out.println("\n--- " + type.getSimpleName() + " ---");
+            int total = stats.values().stream().mapToInt(Integer::intValue).sum();
+
+            for (Map.Entry<CaseConvention, Integer> stat : stats.entrySet()) {
+                int percentage = (stat.getValue() * 100) / total;
+                System.out.println(stat.getKey() + ": " + percentage + "% (" + stat.getValue() + ")");
+            }
         }
     }
 }

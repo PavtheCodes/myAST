@@ -118,7 +118,7 @@ public final class AnalyzerConfig {
     private static int parseThreshold(Map<?, ?> configMap) {
         Object rulesValue = configMap.get("rules");
         if (rulesValue instanceof Map<?, ?> rulesMap) {
-            Object ejRule2Value = rulesMap.get("EJRule2");
+            Object ejRule2Value = rulesMap.get("ConstructorParameterThresholdRule");
             if (ejRule2Value instanceof Map<?, ?> ejRule2Map) {
                 Object thresholdValue = ejRule2Map.get("parameterThreshold");
                 if (thresholdValue instanceof Number number) {

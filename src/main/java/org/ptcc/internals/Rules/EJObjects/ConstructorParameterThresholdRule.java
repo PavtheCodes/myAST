@@ -3,9 +3,7 @@ package org.ptcc.internals.Rules.EJObjects;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.body.Parameter;
 
-import javassist.NotFoundException;
 import org.ptcc.internals.Config.AnalyzerConfig;
 import org.ptcc.internals.Collections.Severity;
 import org.ptcc.internals.Collections.Violation;
@@ -21,7 +19,7 @@ import java.util.List;
  *
  * @see <a href="https://www.oreilly.com/library/view/effective-java-3rd/9780134686097/">Effective Java by Joshua Bloch</a>
  */
-class EJRule2 implements Rule {
+class ConstructorParameterThresholdRule implements Rule {
 
     /**
      * Checks a parsed Java file for violations

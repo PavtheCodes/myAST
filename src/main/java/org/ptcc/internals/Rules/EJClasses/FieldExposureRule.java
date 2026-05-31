@@ -1,21 +1,14 @@
 package org.ptcc.internals.Rules.EJClasses;
 
-import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AnnotationExpr;
-import com.github.javaparser.ast.stmt.Statement;
 import org.ptcc.internals.Collections.Severity;
 import org.ptcc.internals.Collections.Templates.AbstractClassRule;
 import org.ptcc.internals.Collections.Violation;
 
-import java.lang.annotation.Annotation;
-import java.lang.annotation.Retention;
 import java.util.*;
-import java.util.stream.IntStream;
 
 /**
  * Effective Java rule focused on encapsulation and field exposure.
@@ -24,7 +17,7 @@ import java.util.stream.IntStream;
  * public final fields and higher severity for mutable public fields. It also
  * records empty classes and nested class context for those edge cases.
  */
-class EJRule16 extends AbstractClassRule {
+class FieldExposureRule extends AbstractClassRule {
 
     @Override
     public void analyze(Node node, List<Violation> violations) {
