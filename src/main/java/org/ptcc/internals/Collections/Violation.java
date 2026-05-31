@@ -9,22 +9,6 @@ public final class Violation {
     private final int lineNum;
     private final String message;
     private final Severity severity;
-    @Deprecated
-    public String test, test2;
-    @Deprecated
-    public String test3, test4;
-    @Deprecated
-    public String test5, test6;
-    @Getter
-    public String getterField;
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public int getLineNum() {
-        return lineNum;
-    }
 
     public String getMessage() {
         return message;
