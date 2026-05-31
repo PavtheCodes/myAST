@@ -1,8 +1,8 @@
-mode: automatic
+mode: manual
 
 namingConventionDetection:
   enabled: true
 
 rules:
-  EJRule2:
+  ConstructorParameterThresholdRule:
     parameterThreshold: 4
