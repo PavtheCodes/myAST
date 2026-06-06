@@ -2,7 +2,7 @@ package org.ptcc.internals.Rules.EJObjects;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.FieldDeclaration;
-import org.checkerframework.framework.type.AnnotatedTypeMirror;
+
 import org.ptcc.internals.Collections.Violation;
 import org.ptcc.internals.Rule;
 
@@ -14,11 +14,8 @@ import java.util.List;
  * @see <a href="https://checkerframework.org/api/org/checkerframework/framework/type/TypeHierarchy.html">
  */
 class UnnecessaryObjectRule implements Rule {
-    private AnnotatedTypeMirror mirror;
 
-    public UnnecessaryObjectRule(AnnotatedTypeMirror mirror) {
-        this.mirror = mirror;
-    }
+
 
     @Override
     public void check(Node node, List<Violation> violations) {
