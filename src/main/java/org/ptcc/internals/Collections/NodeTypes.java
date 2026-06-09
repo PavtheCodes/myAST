@@ -33,15 +33,6 @@ public enum NodeTypes {
     public Class<? extends Node> getNodeClass() {
         return nodeClass;
     }
-    /*public boolean validateNode(Node node) {
-        for(Node n : NodeTypes.values()){
-            if(n.getNodeClass().equals(node.getClass())) {
-                return true;
-            }
-        }
-        return false;
-    }
-    */
     public static EnumDeclaration fetchSelf() throws IOException {
         CompilationUnit node = StaticJavaParser.parse(Paths.get(PATH));
         List<EnumDeclaration> allEnums = node.findAll(EnumDeclaration.class);
