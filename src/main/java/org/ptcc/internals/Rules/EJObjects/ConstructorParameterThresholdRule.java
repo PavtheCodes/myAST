@@ -11,6 +11,7 @@ import org.ptcc.internals.Rule;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * Effective Java (3rd Edition) - Item 2: Consider a builder when faced with many constructor parameters.
  *
@@ -19,6 +20,7 @@ import java.util.List;
  *
  * @see <a href="https://www.oreilly.com/library/view/effective-java-3rd/9780134686097/">Effective Java by Joshua Bloch</a>
  */
+
 class ConstructorParameterThresholdRule implements Rule {
 
     /**
@@ -75,12 +77,3 @@ class ConstructorParameterThresholdRule implements Rule {
         return highest.getParameters().size();
     }
 }
-
-/** Note: Aware I could cut this code shorter. My streams aren't developed at the time. 27/03/2026 **/
-/**
- * Future Additions:
- * 1. Null Checks for empty lists, nodes and classes without constructors 50%
- * 2. Refactoring some names
- * 3. Aware largestConstructor is useless, you just need the max
- * 4. Scale the Violations (Optional)
- */
