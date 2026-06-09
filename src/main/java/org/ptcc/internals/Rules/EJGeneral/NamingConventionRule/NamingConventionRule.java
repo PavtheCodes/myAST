@@ -8,16 +8,11 @@ import org.ptcc.internals.Config.AnalyzerConfig;
 import org.ptcc.internals.Collections.NodeTypes;
 import org.ptcc.internals.Collections.Severity;
 import org.ptcc.internals.Collections.Violation;
-import org.ptcc.internals.Rule;
 import org.ptcc.internals.Rules.TwoPassRule;
 
-import java.sql.SQLOutput;
 import java.util.*;
 import java.util.regex.Pattern;
 
-
-
-// Adhere to naming conventions
 class NamingConventionRule implements TwoPassRule {
     private enum CaseConvention {
         UPPER_SNAKE("^[A-Z][A-Z0-9_]*$"),
