@@ -2,7 +2,6 @@ package org.ptcc.internals.Collections;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
-import lombok.Getter;
 
 public final class Violation {
     private final String filePath;
