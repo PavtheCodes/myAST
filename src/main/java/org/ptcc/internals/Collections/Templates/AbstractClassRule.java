@@ -2,7 +2,6 @@ package org.ptcc.internals.Collections.Templates;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
 import org.ptcc.internals.Collections.Severity;
 import org.ptcc.internals.Collections.Violation;
 import org.ptcc.internals.Rule;
