@@ -19,12 +19,13 @@ import static org.ptcc.internals.Collections.UtilClass.checkNodeForClass;
  * non-static methods, and non-final classes that are being treated as utility
  * containers.
  */
+
 class StaticFactoryMethods implements Rule {
 
     @Override
     public void check(Node node, List<Violation> violations) {
         if (!(node instanceof ClassOrInterfaceDeclaration clazz)) {
-            return;  // Not a class, nothing to check
+            return;
         }
         checkNodeForClass(node);
         if(clazz.getMethods().isEmpty()) {
@@ -37,17 +38,10 @@ class StaticFactoryMethods implements Rule {
                     break;
                 }
             }
-
         }
         else {
             violations.add(new Violation.Builder("Class is not final, cannot be a Utility Class as they are Final.", Severity.INFO).at(clazz).build());
         }
-
     }
 }
 
-/* 1. Parse a Class
-   2. Parse every method
-   3. If all methods don't contain keyword "static"
-   4. Parse All Constructors, Violation if more than one && Violation if Constructor isn't Private.
- */
