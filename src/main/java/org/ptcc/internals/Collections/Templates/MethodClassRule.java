@@ -1,14 +1,11 @@
 package org.ptcc.internals.Collections.Templates;
 
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import javassist.compiler.ast.MethodDecl;
 import org.ptcc.internals.Collections.Severity;
 import org.ptcc.internals.Collections.Violation;
 import org.ptcc.internals.Rule;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 public abstract class MethodClassRule implements Rule {
